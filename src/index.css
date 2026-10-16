@@ -1,0 +1,197 @@
+@import "tailwindcss";
+
+::selection {
+  background: #B8A7D9;
+  color: #000000;
+}
+
+::-moz-selection {
+  background: #B8A7D9;
+  color: #000000;
+}
+
+@theme {
+  --font-sans: "Outfit", system-ui, -apple-system, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
+  --font-serif: "Lato", system-ui, sans-serif;
+}
+
+@layer base {
+  :root {
+    --bg-primary: #000000;
+    --bg-secondary: #080808;
+    --bg-card: rgba(8, 8, 10, 0.85);
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.22);
+    --text-primary: #f4f4f0;
+    --text-secondary: #a1a1aa;
+    --color-sand: #B8A7D9;
+    --color-olive: #B8A7D9;
+    font-family:
+      "Outfit",
+      system-ui,
+      -apple-system,
+      sans-serif;
+  }
+
+  #root {
+    min-height: 100vh;
+    background-color: #000000;
+  }
+
+  body {
+    background-color: #000000;
+    color: #f4f4f0;
+    overflow-x: clip;
+    font-optical-sizing: auto;
+    font-synthesis: none;
+    line-height: 1.65;
+  }
+
+  p {
+    font-family: "Lato", system-ui, sans-serif;
+    font-optical-sizing: auto;
+    word-spacing: 0.04em;
+    letter-spacing: 0.005em;
+    line-height: 1.75;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: inherit;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+
+  code,
+  pre,
+  .font-mono {
+    font-family: "DM Mono", ui-monospace, monospace;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+  }
+}
+
+/* Custom Scrollbar - Minimalist Dark */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(184, 167, 217, 0.4);
+}
+
+/* Haute-Couture / Editorial Glass Cards */
+.glass-panel {
+  background: rgba(8, 8, 10, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-hover {
+  background: rgba(8, 8, 10, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(18, 18, 22, 0.9);
+  border-color: rgba(184, 167, 217, 0.35);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.9);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+/* Editorial Monospace Badges */
+.badge-editorial {
+  font-family: "DM Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #B8A7D9;
+}
+
+/* Subtle Gradient for Typography */
+.text-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #e2e2dc 50%, #B8A7D9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-subtle {
+  background: linear-gradient(135deg, #f4f4f0 0%, #a1a1aa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-lavender {
+  background: linear-gradient(135deg, #f4f4f0 0%, #B8A7D9 60%, #B8A7D9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Subtle Geometric Pattern */
+.bg-grid-pattern {
+  background-size: 48px 48px;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+/* Floating animation */
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+/* Subtle warm ambient lighting */
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(1.05);
+  }
+}
+
+.animate-ambient {
+  animation: pulse-subtle 10s ease-in-out infinite alternate;
+}

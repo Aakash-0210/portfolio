@@ -13,20 +13,17 @@ export const HeroCanvas: React.FC<HeroCanvasProps> = ({ paused = false }) => {
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const pointerQuery = window.matchMedia('(pointer: fine)');
 
     const updateRenderMode = () => {
-      setShouldRender3D(pointerQuery.matches && !mediaQuery.matches);
+      setShouldRender3D(!mediaQuery.matches);
     };
 
     updateRenderMode();
 
     mediaQuery.addEventListener?.('change', updateRenderMode);
-    pointerQuery.addEventListener?.('change', updateRenderMode);
 
     return () => {
       mediaQuery.removeEventListener?.('change', updateRenderMode);
-      pointerQuery.removeEventListener?.('change', updateRenderMode);
     };
   }, []);
 
@@ -52,9 +49,10 @@ export const HeroCanvas: React.FC<HeroCanvasProps> = ({ paused = false }) => {
     );
     camera.position.z = 18;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isCoarsePointer });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isCoarsePointer ? 1 : 1.5));
     container.appendChild(renderer.domElement);
 
     // Main Group for interactive mouse rotation
@@ -137,7 +135,7 @@ export const HeroCanvas: React.FC<HeroCanvasProps> = ({ paused = false }) => {
     }
 
     // 6. Ambient Stardust Field (Soft Silver / Champagne)
-    const particleCount = 650;
+    const particleCount = isCoarsePointer ? 300 : 650;
     const particlePositions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount * 3; i += 3) {
       particlePositions[i] = (Math.random() - 0.5) * 35;

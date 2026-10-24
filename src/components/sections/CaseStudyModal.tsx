@@ -53,10 +53,10 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ duration: 0.3 }}
-          className="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-3xl glass-panel border border-white/15 bg-[#080808] shadow-2xl z-10 overflow-hidden"
+          className="case-study-modal-panel relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-3xl glass-panel border border-white/15 bg-[#080808] shadow-2xl z-10 overflow-hidden"
         >
           {/* Top Header */}
-          <div className="p-6 sm:p-8 border-b border-white/10 flex items-start justify-between gap-4 bg-black/40">
+          <div className="case-study-modal-header p-6 sm:p-8 border-b border-white/10 flex items-start justify-between gap-4 bg-black/40">
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-2">
                 <span className="px-3 py-1 rounded-full text-xs font-mono bg-white/5 text-[#B8A7D9] border border-white/10 uppercase">
@@ -378,6 +378,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
                 href={project.links.github}
                 target="_blank"
                 rel="noreferrer"
+                onClick={() => soundManager.playClick()}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-full glass-panel border border-white/10 hover:border-white/25 text-xs font-mono uppercase text-neutral-300 hover:text-white transition-colors"
               >
                 <GithubIcon className="w-3.5 h-3.5" />
@@ -389,6 +390,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
                   href={project.links.demo}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => soundManager.playClick()}
                   className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white hover:bg-neutral-200 text-black text-xs font-mono font-bold uppercase transition-colors shadow"
                 >
                   <span>Live App</span>

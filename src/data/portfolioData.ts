@@ -10,7 +10,8 @@ export const personalInfo = {
     'Software Engineer',
     'Problem Solver'
   ],
-  tagline: 'I build scalable applications, modern web experiences, and backend systems that solve real-world problems.',
+  heroStatement: 'A Software Engineer Dedicated to Crafting Modern Web Solutions.',
+  tagline: 'I build modern, responsive web applications with React and Javascript — reusable components, careful state, and clean API integration — and I\nnow work across the full stack with Spring boot and MERN Stack',
   bio: 'A passionate Full Stack Developer focused on crafting high-performance, resilient web applications and robust distributed backend architectures. I blend engineering rigor with intuitive user experiences.',
   story: 'I started with HTML and CSS, then expanded into React, Node.js, Java, and databases. Now I bring those skills together to build products that feel effortless, perform seamlessly, and scale with purpose.',
   vision: 'I aim to build reliable software that solves meaningful problems and keeps the user experience simple. As I grow, I’m exploring distributed systems and cloud architecture to create scalable products without losing sight of the people behind every interaction.',

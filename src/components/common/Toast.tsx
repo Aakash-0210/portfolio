@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Info, X } from 'lucide-react';
+import { soundManager } from '../../utils/sound';
 
 export interface ToastMessage {
   id: string;
@@ -16,7 +17,7 @@ interface ToastProps {
 
 export const Toast: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
   return (
-    <div className="fixed bottom-6 right-6 z-[99995] flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+    <div className="toast-stack fixed bottom-6 right-6 z-[99995] flex w-full max-w-sm flex-col gap-2 pointer-events-none">
       <AnimatePresence>
         {toasts.map((toast) => (
           <motion.div
@@ -41,7 +42,10 @@ export const Toast: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
               </div>
             </div>
             <button
-              onClick={() => onDismiss(toast.id)}
+              onClick={() => {
+                soundManager.playClick();
+                onDismiss(toast.id);
+              }}
               className="p-1 rounded text-neutral-400 hover:text-white transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />

@@ -22,7 +22,10 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose}
+          onClick={() => {
+            soundManager.playClick();
+            onClose();
+          }}
         />
 
         <motion.section
@@ -32,7 +35,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="relative z-10 flex h-[92vh] max-h-[1000px] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#080808] shadow-2xl"
+          className="resume-modal-panel relative z-10 flex h-[92vh] max-h-[1000px] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#080808] shadow-2xl"
         >
           <header className="flex shrink-0 items-center justify-between gap-4 border-b border-white/10 bg-black/60 px-4 py-3 sm:px-6">
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#B8A7D9]">

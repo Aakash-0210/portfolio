@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Sparkles, Layers, Target, Zap, BookOpen, 
@@ -6,8 +6,11 @@ import {
 } from 'lucide-react';
 import { personalInfo } from '../../data/portfolioData';
 import { soundManager } from '../../utils/sound';
+import { useGsapScrollReveal } from '../../hooks/useGsapScrollReveal';
 
 export const AboutSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  useGsapScrollReveal(sectionRef);
   const [activeTab, setActiveTab] = useState<'story' | 'vision' | 'values'>('story');
 
   const coreValueIcons: Record<string, React.ReactNode> = {
@@ -18,18 +21,18 @@ export const AboutSection: React.FC = () => {
   };
 
   return (
-    <section id="about" className="relative pt-24 pb-20 z-10 border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={sectionRef} id="about" className="portfolio-section about-section relative z-10">
+      <div className="section-inner container-x max-w-7xl mx-auto px-2 sm:px-4 lg:px-5">
         
         {/* Section Header */}
-        <div className="flex flex-col space-y-4 mb-16 text-left">
+        <div data-gsap-reveal className="section-header about-header flex flex-col space-y-4 mb-16 text-left">
           <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#B8A7D9]">
             <span>(01)</span>
             <span>//</span>
             <span>ABOUT ME</span>
           </div>
 
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.12] text-[#f4f4f0] max-w-3xl">
+          <h2 data-gsap-rule className="section-title text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.12] text-[#f4f4f0] max-w-3xl">
             Thoughtful software, built to last.
           </h2>
 
@@ -38,10 +41,10 @@ export const AboutSection: React.FC = () => {
           </p>
 
           {/* Interactive Navigation Tabs */}
-          <div role="tablist" aria-label="About sections" className="flex w-full sm:w-fit flex-nowrap items-center gap-1 sm:gap-2 p-1 rounded-full glass-panel border border-white/10 mt-4">
+          <div role="tablist" aria-label="About sections" className="section-tabs flex w-full sm:w-fit flex-nowrap items-center gap-1 sm:gap-2 p-1 rounded-full glass-panel border border-white/10 mt-4">
             <button
               onClick={() => {
-                soundManager.playSwitch();
+                soundManager.playClick();
                 setActiveTab('story');
               }}
               role="tab"
@@ -56,7 +59,7 @@ export const AboutSection: React.FC = () => {
             </button>
             <button
               onClick={() => {
-                soundManager.playSwitch();
+                soundManager.playClick();
                 setActiveTab('values');
               }}
               role="tab"
@@ -72,7 +75,7 @@ export const AboutSection: React.FC = () => {
             </button>
             <button
               onClick={() => {
-                soundManager.playSwitch();
+                soundManager.playClick();
                 setActiveTab('vision');
               }}
               role="tab"
@@ -89,16 +92,18 @@ export const AboutSection: React.FC = () => {
         </div>
 
         {/* Bento Grid: Story & Technical DNA */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div data-gsap-stagger className="about-grid grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           {/* Main Story Narrative Card */}
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35 }}
-            className="lg:col-span-8 p-6 sm:p-10 rounded-3xl glass-panel border border-white/10 flex flex-col justify-between shadow-2xl relative overflow-hidden"
-          >
+          <div className="about-story-shell lg:col-span-8">
+            <motion.div
+              key={activeTab}
+              data-gsap-item
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className="about-story-card h-full p-6 sm:p-10 rounded-3xl glass-panel border border-white/10 flex flex-col justify-between shadow-2xl relative overflow-hidden"
+            >
             {activeTab === 'story' && (
               <div className="space-y-7">
                 <div className="flex items-center gap-2 text-xs font-mono text-[#B8A7D9] uppercase tracking-widest">
@@ -156,12 +161,13 @@ export const AboutSection: React.FC = () => {
               <span className="text-[#B8A7D9]">Based in India · Open to collaboration</span>
               <span>React · Java · Node.js</span>
             </div>
-          </motion.div>
+            </motion.div>
+          </div>
 
           {/* Quick Highlight Cards */}
-          <div className="lg:col-span-4 flex flex-col gap-5 justify-between">
+          <div data-gsap-item className="about-highlights lg:col-span-4 flex flex-col gap-5 justify-between">
             {/* Developer DNA Card */}
-            <div className="p-6 rounded-3xl glass-panel border border-white/10 bg-slate-950/60 shadow-lg relative overflow-hidden group">
+            <div className="about-highlight-card p-6 rounded-3xl glass-panel border border-white/10 bg-slate-950/60 shadow-lg relative overflow-hidden group">
               <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-medium text-[#B8A7D9] uppercase tracking-wide">Engineering Discipline</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-[#B8A7D9]" />
@@ -178,7 +184,7 @@ export const AboutSection: React.FC = () => {
                   <span className="text-[#B8A7D9]">98%</span>
                 </div>
                 <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                  <div className="w-[98%] h-full bg-[#B8A7D9] rounded-full" />
+                  <div data-gsap-bar className="w-[98%] h-full origin-left bg-[#B8A7D9] rounded-full" />
                 </div>
 
                 <div className="flex justify-between text-neutral-300 pt-1">
@@ -186,13 +192,13 @@ export const AboutSection: React.FC = () => {
                   <span className="text-neutral-400">92%</span>
                 </div>
                 <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                  <div className="w-[92%] h-full bg-neutral-400 rounded-full" />
+                  <div data-gsap-bar className="w-[92%] h-full origin-left bg-neutral-400 rounded-full" />
                 </div>
               </div>
             </div>
 
             {/* Continuous Delivery Card */}
-            <div className="p-6 rounded-3xl glass-panel border border-white/10 bg-slate-950/60 shadow-lg relative overflow-hidden">
+            <div className="about-highlight-card p-6 rounded-3xl glass-panel border border-white/10 bg-slate-950/60 shadow-lg relative overflow-hidden">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-medium text-[#B8A7D9] uppercase tracking-wide">Consistency</span>
                 <TrendingUp className="w-4 h-4 text-[#B8A7D9]" />

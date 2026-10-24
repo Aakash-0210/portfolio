@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Atom, Code, Coffee, Database, FileCode2, KeyRound, Leaf,
@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { skillsData } from '../../data/portfolioData';
 import { soundManager } from '../../utils/sound';
+import { useGsapScrollReveal } from '../../hooks/useGsapScrollReveal';
 
 type Category = 'All' | 'Frontend' | 'Backend' | 'Database';
 
@@ -14,6 +15,10 @@ const stackOrder = [
   'HTML5', 'CSS3', 'JavaScript', 'React.js', 'Tailwind CSS',
   'Node.js', 'Express.js', 'REST API', 'JWT Auth', 'Spring Boot', 'Java',
   'MySQL', 'MongoDB'
+];
+const marqueeRows = [
+  ['React.js', 'TypeScript', 'JavaScript', 'Tailwind CSS', 'Redux Toolkit', 'CSS3'],
+  ['Node.js', 'Express.js', 'Spring Boot', 'Java', 'MySQL', 'MongoDB', 'REST APIs'],
 ];
 
 const skills = skillsData
@@ -40,13 +45,26 @@ const skillsFor = (category: Category) =>
   category === 'All' ? skills : skills.filter((skill) => skill.category === category);
 
 export const TechStackSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  const [marqueeActive, setMarqueeActive] = useState(false);
+  useGsapScrollReveal(sectionRef);
   const [activeCategory, setActiveCategory] = useState<Category>('All');
   const visibleSkills = skillsFor(activeCategory);
 
+  useEffect(() => {
+    const marquee = marqueeRef.current;
+    if (!marquee) return;
+    const observer = new IntersectionObserver(([entry]) => setMarqueeActive(entry.isIntersecting));
+    observer.observe(marquee);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="tech-stack"
-      className="relative isolate overflow-hidden border-t border-white/5 py-16 sm:py-28"
+      className="portfolio-section tech-section relative isolate overflow-hidden z-10"
     >
       <div
         aria-hidden="true"
@@ -56,23 +74,44 @@ export const TechStackSection: React.FC = () => {
             'radial-gradient(ellipse 75% 45% at 50% 33%, rgba(88, 28, 135, 0.12), transparent 100%), radial-gradient(ellipse 55% 40% at 10% 81%, rgba(55, 20, 85, 0.06), transparent 100%), radial-gradient(ellipse 55% 40% at 90% 86%, rgba(55, 20, 85, 0.06), transparent 100%)',
         }}
       />
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <header className="mb-6 sm:mb-12">
+      <div className="section-inner container-x relative z-10 mx-auto max-w-7xl px-2 sm:px-4 lg:px-5">
+        <header data-gsap-reveal="left" className="section-header tech-header mb-6 sm:mb-12">
           <div className="mb-3 flex items-center justify-start gap-2 text-[10px] font-mono uppercase tracking-[0.24em] text-[#B8A7D9]">
             <span>(02)</span><span>//</span><span>TOOLS OF THE TRADE</span>
           </div>
-          <h2 className="text-center text-3xl font-light uppercase tracking-[0.05em] text-[#e7def2] sm:text-6xl sm:tracking-[0.08em]">
-            Tech Stack
+          <h2 data-gsap-rule className="section-title text-left font-medium text-[#e7def2]">
+            From interfaces to the systems behind them.
           </h2>
         </header>
 
-        <nav aria-label="Filter technologies" className="mb-8 flex flex-wrap justify-center gap-2">
+        <div ref={marqueeRef} className="tech-marquee" data-marquee-active={marqueeActive} aria-hidden="true">
+          {marqueeRows.map((row, rowIndex) => (
+            <div className={`tech-marquee__lane tech-marquee__lane--${rowIndex + 1}`} key={rowIndex}>
+              <div className="tech-marquee__track">
+                {[false, true].map((isClone) => (
+                  <div key={String(isClone)} className="tech-marquee__group">
+                    {row.map((technology) => (
+                      <span
+                        key={technology}
+                        className={`tech-marquee__item${isClone ? ' tech-marquee__item--clone' : ''}`}
+                      >
+                        {technology}
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <nav data-gsap-reveal="scale" aria-label="Filter technologies" className="tech-filter mb-8 flex flex-wrap justify-center gap-2">
           {categories.map((category) => (
             <button
               key={category}
               type="button"
               onClick={() => {
-                soundManager.playSwitch();
+                soundManager.playClick();
                 setActiveCategory(category);
               }}
               onMouseEnter={() => soundManager.playHover()}
@@ -88,22 +127,31 @@ export const TechStackSection: React.FC = () => {
           ))}
         </nav>
 
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="wait">
           <motion.div
             key={activeCategory}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.16, ease: 'easeOut' }}
-            className="mx-auto flex max-w-[580px] flex-wrap justify-center gap-3"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.18 }}
+            exit={{ opacity: 0, y: -8, transition: { duration: 0.14 } }}
+            variants={{
+              hidden: { opacity: 0, y: 14 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration: 0.42, ease: 'easeOut', staggerChildren: 0.045, delayChildren: 0.04 },
+              },
+            }}
+            className="tech-skill-grid mx-auto flex max-w-[680px] flex-wrap justify-center gap-3"
           >
-            {visibleSkills.map((skill, index) => (
+            {visibleSkills.map((skill) => (
               <motion.div
                 key={skill.name}
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.18, delay: Math.min(index * 0.018, 0.14), ease: 'easeOut' }}
-                className="group flex h-[92px] w-[88px] flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.025] text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] transition duration-200 hover:-translate-y-1 hover:border-[#B8A7D9]/35 hover:bg-white/[0.055] sm:h-24 sm:w-24"
+                variants={{
+                  hidden: { opacity: 0, y: 12, scale: 0.94 },
+                  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.32, ease: 'easeOut' } },
+                }}
+                className="tech-skill-card group flex h-[92px] w-[88px] flex-col items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.025] text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] transition duration-200 hover:-translate-y-1 hover:border-[#B8A7D9]/35 hover:bg-white/[0.055] sm:h-24 sm:w-24"
               >
                 <span
                   className="transition-transform duration-200 group-hover:scale-110"
@@ -120,7 +168,7 @@ export const TechStackSection: React.FC = () => {
           </motion.div>
         </AnimatePresence>
 
-        <p className="mt-7 text-center text-[10px] font-mono uppercase tracking-widest text-neutral-600">
+        <p data-gsap-reveal="up" className="mt-7 text-center text-[10px] font-mono uppercase tracking-widest text-neutral-600">
           {String(visibleSkills.length).padStart(2, '0')} technologies / full-stack development
         </p>
       </div>

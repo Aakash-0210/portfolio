@@ -39,7 +39,7 @@ export const AchievementsSection: React.FC = () => {
 
   return (
     <section id="achievements" className="relative py-24 z-10 border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="section-inner container-x max-w-7xl mx-auto px-2 sm:px-4 lg:px-5">
         
         {/* Section Header */}
         <div className="flex flex-col space-y-4 mb-16 text-left">
@@ -49,7 +49,7 @@ export const AchievementsSection: React.FC = () => {
             <span>VERIFIED BENCHMARKS</span>
           </div>
 
-          <h2 className="text-4xl sm:text-6xl font-extrabold uppercase tracking-tighter text-[#f4f4f0] max-w-4xl">
+          <h2 className="section-title text-4xl sm:text-6xl font-extrabold uppercase tracking-tighter text-[#f4f4f0] max-w-4xl">
             Engineering Milestones <br />
             <span className="text-neutral-500">& Quality Standards.</span>
           </h2>

@@ -1,0 +1,27 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Aakash Prajapati"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:aakashprajapati:portfolio:profile",
+      "displayName": "Aakash Prajapati portfolio profile",
+      "type": "application/ai-catalog+json",
+      "description": "Professional profile and portfolio overview for Aakash Prajapati, a full-stack developer and software engineer.",
+      "tags": ["portfolio", "software engineering", "full-stack development"],
+      "representativeQueries": [
+        "Who is Aakash Prajapati and what does he build?",
+        "What projects and technical skills are featured in Aakash Prajapati's portfolio?"
+      ],
+      "data": {
+        "name": "Aakash Prajapati",
+        "role": "Full Stack Developer & Software Engineer",
+        "profiles": {
+          "github": "https://github.com/Aakash-0210",
+          "linkedin": "https://www.linkedin.com/in/aakashprajapati2"
+        }
+      }
+    }
+  ]
+}

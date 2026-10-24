@@ -1,0 +1,15 @@
+# Aakash Prajapati
+
+Portfolio of Aakash Prajapati, a full-stack developer and software engineer. This site presents professional background, technical skills, selected projects, services, and contact information.
+
+## Portfolio
+- [Home](/): Introduction and current role.
+- [About](/#about): Professional background.
+- [Technical skills](/#tech-stack): Technologies and tools.
+- [Projects](/#projects): Selected work.
+- [Services](/#services): Development services.
+- [Contact](/#contact): Contact options.
+
+## Profiles
+- [GitHub](https://github.com/Aakash-0210)
+- [LinkedIn](https://www.linkedin.com/in/aakashprajapati2)

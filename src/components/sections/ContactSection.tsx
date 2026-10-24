@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   MessageCircle, Copy, Check, Clock, MapPin
 } from 'lucide-react';
@@ -7,6 +7,7 @@ import { personalInfo } from '../../data/portfolioData';
 import { soundManager } from '../../utils/sound';
 import { createGmailComposeUrl } from '../../utils/email';
 import { copyTextToClipboard } from '../../utils/clipboard';
+import { useGsapScrollReveal } from '../../hooks/useGsapScrollReveal';
 
 interface ContactSectionProps {
   onNotify: (title: string, message?: string) => void;
@@ -75,15 +76,20 @@ const ContactForm: React.FC<ContactSectionProps> = ({ onNotify }) => {
   };
 
   return (
-    <div className="lg:col-span-7">
-      <div className="p-6 sm:p-10 rounded-3xl border border-white/10 bg-neutral-900/90 shadow-2xl relative overflow-hidden">
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-1">
-            <label className="text-xs font-mono uppercase tracking-wider text-neutral-300 block">
+    <div data-gsap-reveal className="contact-form-column lg:col-span-7">
+      <div className="contact-form-panel p-6 sm:p-10 rounded-3xl border border-white/10 bg-neutral-900/90 shadow-2xl relative overflow-hidden">
+        <form noValidate onSubmit={handleSubmit} data-gsap-stagger className="space-y-5">
+          <div data-gsap-item className="space-y-1">
+            <label htmlFor="contact-name" className="text-xs font-mono uppercase tracking-wider text-neutral-300 block">
               Your Full Name <span className="text-[#B8A7D9]">*</span>
             </label>
             <input
+              id="contact-name"
               type="text"
+              autoComplete="name"
+              required
+              aria-invalid={Boolean(errors.name)}
+              aria-describedby={errors.name ? 'contact-name-error' : undefined}
               value={formData.name}
               onChange={(e) => setFormData((current) => ({ ...current, name: e.target.value }))}
               placeholder="e.g. Elena Rostova"
@@ -91,15 +97,20 @@ const ContactForm: React.FC<ContactSectionProps> = ({ onNotify }) => {
                 errors.name ? 'border-rose-500 focus:border-rose-400' : 'border-white/10 focus:border-white/40'
               }`}
             />
-            {errors.name && <p className="text-[11px] font-mono text-rose-400 mt-1">{errors.name}</p>}
+            {errors.name && <p id="contact-name-error" role="alert" className="text-[11px] font-mono text-rose-400 mt-1">{errors.name}</p>}
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-mono uppercase tracking-wider text-neutral-300 block">
+          <div data-gsap-item className="space-y-1">
+            <label htmlFor="contact-email" className="text-xs font-mono uppercase tracking-wider text-neutral-300 block">
               Your Email Address <span className="text-[#B8A7D9]">*</span>
             </label>
             <input
+              id="contact-email"
               type="email"
+              autoComplete="email"
+              required
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? 'contact-email-error' : undefined}
               value={formData.email}
               onChange={(e) => setFormData((current) => ({ ...current, email: e.target.value }))}
               placeholder="e.g. elena@company.com"
@@ -107,12 +118,13 @@ const ContactForm: React.FC<ContactSectionProps> = ({ onNotify }) => {
                 errors.email ? 'border-rose-500 focus:border-rose-400' : 'border-white/10 focus:border-white/40'
               }`}
             />
-            {errors.email && <p className="text-[11px] font-mono text-rose-400 mt-1">{errors.email}</p>}
+            {errors.email && <p id="contact-email-error" role="alert" className="text-[11px] font-mono text-rose-400 mt-1">{errors.email}</p>}
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-mono uppercase tracking-wider text-neutral-300 block">Opportunity / Topic</label>
+          <div data-gsap-item className="space-y-1">
+            <label htmlFor="contact-subject" className="text-xs font-mono uppercase tracking-wider text-neutral-300 block">Opportunity / Topic</label>
             <input
+              id="contact-subject"
               type="text"
               value={formData.subject}
               onChange={(e) => setFormData((current) => ({ ...current, subject: e.target.value }))}
@@ -121,12 +133,16 @@ const ContactForm: React.FC<ContactSectionProps> = ({ onNotify }) => {
             />
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-mono uppercase tracking-wider text-neutral-300 block">
+          <div data-gsap-item className="space-y-1">
+            <label htmlFor="contact-message" className="text-xs font-mono uppercase tracking-wider text-neutral-300 block">
               Message Details <span className="text-[#B8A7D9]">*</span>
             </label>
             <textarea
+              id="contact-message"
               rows={5}
+              required
+              aria-invalid={Boolean(errors.message)}
+              aria-describedby={errors.message ? 'contact-message-error' : undefined}
               value={formData.message}
               onChange={(e) => setFormData((current) => ({ ...current, message: e.target.value }))}
               placeholder="Tell me about your product requirements, team, or project vision..."
@@ -134,10 +150,10 @@ const ContactForm: React.FC<ContactSectionProps> = ({ onNotify }) => {
                 errors.message ? 'border-rose-500 focus:border-rose-400' : 'border-white/10 focus:border-white/40'
               }`}
             />
-            {errors.message && <p className="text-[11px] font-mono text-rose-400 mt-1">{errors.message}</p>}
+            {errors.message && <p id="contact-message-error" role="alert" className="text-[11px] font-mono text-rose-400 mt-1">{errors.message}</p>}
           </div>
 
-          <button type="submit" className="w-full py-4 rounded-full bg-white hover:bg-neutral-200 text-black font-bold text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer">
+          <button data-gsap-item type="submit" className="w-full py-4 rounded-full bg-white hover:bg-neutral-200 text-black font-bold text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer">
             <MessageCircle className="w-3.5 h-3.5" />
             <span>Continue in WhatsApp</span>
           </button>
@@ -148,9 +164,12 @@ const ContactForm: React.FC<ContactSectionProps> = ({ onNotify }) => {
 };
 
 export const ContactSection: React.FC<ContactSectionProps> = ({ onNotify }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  useGsapScrollReveal(sectionRef);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const handleCopyEmail = async () => {
+    soundManager.playClick();
     try {
       await copyTextToClipboard(personalInfo.email);
       soundManager.playSuccess();
@@ -158,31 +177,30 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onNotify }) => {
       onNotify('Email Copied to Clipboard', personalInfo.email);
       setTimeout(() => setCopiedEmail(false), 2500);
     } catch {
-      soundManager.playClick();
       setCopiedEmail(false);
       onNotify('Unable to copy email', `Please copy this address manually: ${personalInfo.email}`);
     }
   };
 
   return (
-    <section id="contact" className="relative py-20 z-10 border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col space-y-4 mb-12 text-left">
+    <section ref={sectionRef} id="contact" className="portfolio-section contact-section relative z-10">
+      <div className="section-inner container-x max-w-7xl mx-auto px-2 sm:px-4 lg:px-5">
+        <div data-gsap-reveal className="section-header contact-header flex flex-col space-y-4 mb-12 text-left">
           <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#B8A7D9]">
             <span>(06)</span><span>//</span><span>INITIATE CONTACT</span>
           </div>
-          <h2 className="text-4xl sm:text-6xl font-extrabold uppercase tracking-tighter text-[#f4f4f0] max-w-4xl">
+          <h2 data-gsap-rule className="section-title text-4xl sm:text-6xl font-extrabold uppercase tracking-tighter text-[#f4f4f0] max-w-4xl">
             Let's Build Something <br />
             <span className="text-neutral-500">Refined &amp; Scalable.</span>
           </h2>
-          <p className="text-base sm:text-lg text-neutral-400 max-w-2xl font-light">
+          <p className="text-base sm:text-lg text-neutral-400 max-w-2xl font-normal leading-8">
             Whether you have a full-time engineering opportunity, architecture consultation, or freelance collaboration, let's talk.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          <div className="lg:col-span-5 space-y-6">
-            <div className="p-6 sm:p-8 rounded-3xl glass-panel border border-white/10 shadow-2xl space-y-6 relative overflow-hidden">
+        <div className="contact-layout grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <div data-gsap-reveal className="contact-direct-column lg:col-span-5 space-y-6">
+            <div className="contact-direct-panel p-6 sm:p-8 rounded-3xl glass-panel border border-white/10 shadow-2xl space-y-6 relative overflow-hidden">
               <div className="space-y-2">
                 <span className="text-xs font-mono text-[#B8A7D9] uppercase tracking-wider">
                   Direct Line
@@ -201,7 +219,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onNotify }) => {
                   <span className="text-[10px] font-mono text-[#B8A7D9] uppercase block">
                     PRIMARY EMAIL
                   </span>
-                  <a href={createGmailComposeUrl(personalInfo.email)} target="_blank" rel="noreferrer" className="text-sm font-mono text-white truncate block hover:underline underline-offset-2">
+                  <a href={createGmailComposeUrl(personalInfo.email)} target="_blank" rel="noreferrer" onClick={() => soundManager.playClick()} className="text-sm font-mono text-white truncate block hover:underline underline-offset-2">
                     {personalInfo.email}
                   </a>
                 </div>
@@ -253,6 +271,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onNotify }) => {
                   href={personalInfo.github}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => soundManager.playClick()}
                   className="flex-1 py-2.5 rounded-full glass-panel border border-white/10 hover:border-white/25 text-neutral-300 hover:text-white text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 transition-colors"
                 >
                   <GithubIcon className="w-3.5 h-3.5" />
@@ -263,6 +282,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onNotify }) => {
                   href={personalInfo.linkedin}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => soundManager.playClick()}
                   className="flex-1 py-2.5 rounded-full glass-panel border border-white/10 hover:border-white/25 text-neutral-300 hover:text-white text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 transition-colors"
                 >
                   <LinkedinIcon className="w-3.5 h-3.5 text-[#B8A7D9]" />

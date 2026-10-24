@@ -1,11 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 export const CustomCursor: React.FC = () => {
-  const [mousePosition, setMousePosition] = useState({ x: -100, y: -100 });
   const [cursorState, setCursorState] = useState<'default' | 'hover' | 'card' | 'text' | 'button'>('default');
   const [cursorLabel, setCursorLabel] = useState<string>('');
   const [isVisible, setIsVisible] = useState(false);
+  const visibleRef = useRef(false);
+  const cursorStateRef = useRef(cursorState);
+  const cursorLabelRef = useRef(cursorLabel);
+  const lastTargetRef = useRef<EventTarget | null>(null);
+  const pointerX = useMotionValue(-100);
+  const pointerY = useMotionValue(-100);
+  const springX = useSpring(pointerX, { damping: 28, stiffness: 350, mass: 0.5 });
+  const springY = useSpring(pointerY, { damping: 28, stiffness: 350, mass: 0.5 });
+  const size = cursorLabel ? 52 : cursorState === 'card' ? 42 : cursorState === 'button' ? 28 : 18;
+  const cursorX = useTransform(springX, (value) => value - size / 2);
+  const cursorY = useTransform(springY, (value) => value - size / 2);
+  const dotX = useTransform(pointerX, (value) => value - 2.5);
+  const dotY = useTransform(pointerY, (value) => value - 2.5);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -14,9 +26,30 @@ export const CustomCursor: React.FC = () => {
     if (prefersReducedMotion || !supportsFinePointer) {
       return;
     }
-    const onMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+
+    const setMode = (state: typeof cursorState, label: string) => {
+      if (cursorStateRef.current !== state) {
+        cursorStateRef.current = state;
+        setCursorState(state);
+      }
+      if (cursorLabelRef.current !== label) {
+        cursorLabelRef.current = label;
+        setCursorLabel(label);
+      }
+    };
+    const show = () => {
+      if (visibleRef.current) return;
+      visibleRef.current = true;
       setIsVisible(true);
+    };
+
+    const onMouseMove = (e: MouseEvent) => {
+      pointerX.set(e.clientX);
+      pointerY.set(e.clientY);
+      show();
+
+      if (lastTargetRef.current === e.target) return;
+      lastTargetRef.current = e.target;
 
       const target = e.target as HTMLElement | null;
       if (!target) return;
@@ -25,59 +58,36 @@ export const CustomCursor: React.FC = () => {
       if (interactiveEl) {
         const type = interactiveEl.getAttribute('data-cursor') || 'hover';
         const label = interactiveEl.getAttribute('data-cursor-label') || '';
-        setCursorState(type as any);
-        setCursorLabel(label);
+        setMode(type as typeof cursorState, label);
         return;
       }
 
       if (target.closest('button, a, input, textarea, select')) {
-        setCursorState('button');
-        setCursorLabel('');
+        setMode('button', '');
         return;
       }
 
       if (target.closest('.glass-panel-hover, .project-card, .skill-card')) {
-        setCursorState('card');
-        setCursorLabel('VIEW');
+        setMode('card', 'VIEW');
         return;
       }
 
-      setCursorState('default');
-      setCursorLabel('');
+      setMode('default', '');
     };
 
-    const onTouchMove = (e: TouchEvent) => {
-      const touch = e.touches[0] ?? e.changedTouches[0];
-      if (!touch) return;
-
-      setMousePosition({ x: touch.clientX, y: touch.clientY });
-      setCursorState('default');
-      setCursorLabel('');
-      setIsVisible(true);
+    const onMouseLeave = () => {
+      visibleRef.current = false;
+      setIsVisible(false);
     };
-
-    const onMouseLeave = () => setIsVisible(false);
-    const onMouseEnter = () => setIsVisible(true);
-    const onTouchEnd = () => setIsVisible(false);
 
     window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('touchstart', onTouchMove, { passive: true });
-    window.addEventListener('touchmove', onTouchMove, { passive: true });
-    window.addEventListener('touchend', onTouchEnd);
-    window.addEventListener('touchcancel', onTouchEnd);
     document.addEventListener('mouseleave', onMouseLeave);
-    document.addEventListener('mouseenter', onMouseEnter);
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('touchstart', onTouchMove);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('touchend', onTouchEnd);
-      window.removeEventListener('touchcancel', onTouchEnd);
       document.removeEventListener('mouseleave', onMouseLeave);
-      document.removeEventListener('mouseenter', onMouseEnter);
     };
-  }, []);
+  }, [pointerX, pointerY]);
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const supportsFinePointer = window.matchMedia('(pointer: fine)').matches;
@@ -95,16 +105,13 @@ export const CustomCursor: React.FC = () => {
       {/* Outer Follower Circle */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full flex items-center justify-center font-mono text-[9px] font-bold tracking-widest uppercase text-white"
+        style={{ x: cursorX, y: cursorY, width: size, height: size }}
         animate={{
-          x: mousePosition.x - (hasLabel ? 32 : isCard ? 28 : isButton ? 22 : 14),
-          y: mousePosition.y - (hasLabel ? 32 : isCard ? 28 : isButton ? 22 : 14),
-          width: hasLabel ? 64 : isCard ? 56 : isButton ? 44 : 28,
-          height: hasLabel ? 64 : isCard ? 56 : isButton ? 44 : 28,
           backgroundColor: hasLabel || isCard
-            ? 'rgba(255, 255, 255, 0.12)'
+            ? 'rgba(255, 255, 255, 0.07)'
             : isButton
-            ? 'rgba(184, 167, 217, 0.15)'
-            : 'rgba(255, 255, 255, 0.04)',
+            ? 'rgba(184, 167, 217, 0.08)'
+            : 'rgba(255, 255, 255, 0.015)',
           borderColor: isButton
             ? 'rgba(184, 167, 217, 0.6)'
             : isCard
@@ -132,14 +139,9 @@ export const CustomCursor: React.FC = () => {
       </motion.div>
 
       {/* Inner Dot */}
-      <div
+      <motion.div
         className="fixed top-0 left-0 pointer-events-none z-[10000] rounded-full bg-white shadow-sm transition-transform duration-75 ease-out"
-        style={{
-          width: 5,
-          height: 5,
-          transform: `translate3d(${mousePosition.x - 2.5}px, ${mousePosition.y - 2.5}px, 0)`,
-          opacity: isButton || hasLabel ? 0 : 1,
-        }}
+        style={{ x: dotX, y: dotY, width: 5, height: 5, opacity: isButton || hasLabel ? 0 : 1 }}
       />
     </>
   );

@@ -2,7 +2,7 @@ import React from 'react';
 
 export const GithubIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg
-    role="img"
+    aria-hidden="true"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -17,7 +17,7 @@ export const GithubIcon: React.FC<{ className?: string }> = ({ className = 'w-4 
 
 export const LinkedinIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg
-    role="img"
+    aria-hidden="true"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"

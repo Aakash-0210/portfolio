@@ -1,17 +1,18 @@
-import React, { Suspense, lazy, useState, useEffect } from 'react';
-import { CustomCursor } from './components/common/CustomCursor';
-import { LoadingScreen } from './components/common/LoadingScreen';
+import React, { Suspense, lazy, useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { ScrollProgress } from './components/common/ScrollProgress';
+import { LenisController } from './components/common/LenisController';
 import { ParticleBackground } from './components/common/ParticleBackground';
-import { Toast } from './components/common/Toast';
 import type { ToastMessage } from './components/common/Toast';
 import { Navbar } from './components/layout/Navbar';
-import { Footer } from './components/layout/Footer';
+import { HeroSection } from './components/sections/HeroSection';
 import { soundManager } from './utils/sound';
 import { copyTextToClipboard } from './utils/clipboard';
 import { personalInfo } from './data/portfolioData';
+import { scrollToTarget } from './utils/smoothScroll';
 
-const HeroSection = lazy(() => import('./components/sections/HeroSection').then((module) => ({ default: module.HeroSection })));
+const CustomCursor = lazy(() => import('./components/common/CustomCursor').then((module) => ({ default: module.CustomCursor })));
+const Toast = lazy(() => import('./components/common/Toast').then((module) => ({ default: module.Toast })));
+const Footer = lazy(() => import('./components/layout/Footer').then((module) => ({ default: module.Footer })));
 const AboutSection = lazy(() => import('./components/sections/AboutSection').then((module) => ({ default: module.AboutSection })));
 const TechStackSection = lazy(() => import('./components/sections/TechStackSection').then((module) => ({ default: module.TechStackSection })));
 const ProjectsSection = lazy(() => import('./components/sections/ProjectsSection').then((module) => ({ default: module.ProjectsSection })));
@@ -25,10 +26,68 @@ const SectionFallback = ({ className = 'min-h-[30vh]' }: { className?: string })
   <div aria-hidden className={`${className} w-full rounded-2xl border border-white/5 bg-white/[0.02]`} />
 );
 
+const LoadedSectionMarker = ({ onLoaded, children }: { onLoaded: () => void; children: React.ReactNode }) => {
+  useLayoutEffect(() => onLoaded(), [onLoaded]);
+  return <>{children}</>;
+};
+
+const DeferredSection = ({
+  id,
+  reserveHeight,
+  fallbackClassName,
+  children,
+}: {
+  id: string;
+  reserveHeight: string;
+  fallbackClassName: string;
+  children: React.ReactNode;
+}) => {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const [nearViewport, setNearViewport] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const markLoaded = useCallback(() => setLoaded(true), []);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    if (!('IntersectionObserver' in window)) {
+      setNearViewport(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setNearViewport(true);
+      observer.disconnect();
+    }, { rootMargin: '1100px 0px' });
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  const fallback = <SectionFallback className={fallbackClassName} />;
+
+  return (
+    <div
+      ref={sectionRef}
+      id={loaded ? undefined : id}
+      style={loaded ? undefined : { minHeight: reserveHeight, scrollMarginTop: '6rem' }}
+    >
+      {nearViewport ? (
+        <Suspense fallback={fallback}>
+          <LoadedSectionMarker onLoaded={markLoaded}>{children}</LoadedSectionMarker>
+        </Suspense>
+      ) : fallback}
+    </div>
+  );
+};
+
 export const App: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [commandPaletteWasOpened, setCommandPaletteWasOpened] = useState(false);
   const [resumePreviewOpen, setResumePreviewOpen] = useState(false);
+  const [resumeWasOpened, setResumeWasOpened] = useState(false);
+  const [cursorEnabled, setCursorEnabled] = useState(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   useEffect(() => {
@@ -38,12 +97,22 @@ export const App: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
+        setCommandPaletteWasOpened(true);
         setCommandPaletteOpen((prev) => !prev);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  useEffect(() => {
+    const pointerPreference = window.matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)');
+    if (!pointerPreference.matches) return;
+
+    const enableCursor = () => setCursorEnabled(true);
+    window.addEventListener('pointermove', enableCursor, { once: true, passive: true });
+    return () => window.removeEventListener('pointermove', enableCursor);
   }, []);
 
   const addToast = (title: string, message?: string, type: 'success' | 'info' = 'success') => {
@@ -67,25 +136,31 @@ export const App: React.FC = () => {
 
   const handleOpenResume = () => {
     soundManager.playClick();
+    setResumeWasOpened(true);
     setResumePreviewOpen(true);
+  };
+
+  const handleOpenPalette = () => {
+    setCommandPaletteWasOpened(true);
+    setCommandPaletteOpen(true);
   };
 
   const handleNavigate = (sectionId: string) => {
     const el = document.getElementById(sectionId);
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      scrollToTarget(el);
     }
   };
 
   return (
     <div className="relative min-h-screen text-[#f4f4f0] font-sans">
-      {/* 1. Loading Experience Sequence */}
-      {isLoading && (
-        <LoadingScreen onComplete={() => setIsLoading(false)} />
-      )}
-
+      <LenisController />
       {/* 2. Custom Magnetic Cursor */}
-      <CustomCursor />
+      {cursorEnabled && (
+        <Suspense fallback={null}>
+          <CustomCursor />
+        </Suspense>
+      )}
 
       {/* 3. Top Scroll Progress Indicator */}
       <ScrollProgress />
@@ -95,70 +170,75 @@ export const App: React.FC = () => {
 
       {/* 5. Sticky Floating Header */}
       <Navbar
-        onOpenPalette={() => setCommandPaletteOpen(true)}
+        onOpenPalette={handleOpenPalette}
         onOpenResume={handleOpenResume}
       />
 
       {/* 6. Main Storytelling Experience Sections */}
       <main className="relative z-10">
-        <Suspense fallback={<SectionFallback className="min-h-screen" />}>
-          <HeroSection
-            onOpenResume={handleOpenResume}
-            resumePreviewOpen={resumePreviewOpen}
-          />
-        </Suspense>
+        <HeroSection onOpenResume={handleOpenResume} />
 
-        <Suspense fallback={<SectionFallback className="min-h-[40vh]" />}>
+        <DeferredSection id="about" reserveHeight="100svh" fallbackClassName="min-h-[40vh]">
           <AboutSection />
-        </Suspense>
+        </DeferredSection>
 
-        <Suspense fallback={<SectionFallback className="min-h-[40vh]" />}>
+        <DeferredSection id="tech-stack" reserveHeight="100svh" fallbackClassName="min-h-[40vh]">
           <TechStackSection />
-        </Suspense>
+        </DeferredSection>
 
-        <Suspense fallback={<SectionFallback className="min-h-[50vh]" />}>
+        <DeferredSection id="projects" reserveHeight="220svh" fallbackClassName="min-h-[50vh]">
           <ProjectsSection />
-        </Suspense>
+        </DeferredSection>
 
-        <Suspense fallback={<SectionFallback className="min-h-[45vh]" />}>
+        <DeferredSection id="code-showcase" reserveHeight="100svh" fallbackClassName="min-h-[45vh]">
           <CodeShowcaseSection />
-        </Suspense>
+        </DeferredSection>
 
-        <Suspense fallback={<SectionFallback className="min-h-[40vh]" />}>
+        <DeferredSection id="services" reserveHeight="330svh" fallbackClassName="min-h-[40vh]">
           <ServicesSection />
-        </Suspense>
+        </DeferredSection>
 
-        <Suspense fallback={<SectionFallback className="min-h-[35vh]" />}>
+        <DeferredSection id="contact" reserveHeight="100svh" fallbackClassName="min-h-[35vh]">
           <ContactSection onNotify={addToast} />
-        </Suspense>
+        </DeferredSection>
       </main>
 
       {/* 7. Minimalist Luxury Footer */}
-      <Footer />
-
-      <Suspense fallback={null}>
-        <ResumeModal
-          isOpen={resumePreviewOpen}
-          onClose={() => setResumePreviewOpen(false)}
-        />
+      <Suspense fallback={<div aria-hidden="true" className="min-h-[20vh]" />}>
+        <Footer />
       </Suspense>
+
+      {resumeWasOpened && (
+        <Suspense fallback={null}>
+          <ResumeModal
+            isOpen={resumePreviewOpen}
+            onClose={() => setResumePreviewOpen(false)}
+          />
+        </Suspense>
+      )}
 
       {/* 8. Command Palette (⌘K) */}
-      <Suspense fallback={null}>
-        <CommandPalette
-          isOpen={commandPaletteOpen}
-          onClose={() => setCommandPaletteOpen(false)}
-          onNavigate={handleNavigate}
-          onOpenResume={handleOpenResume}
-          onCopyEmail={handleCopyEmail}
-        />
-      </Suspense>
+      {commandPaletteWasOpened && (
+        <Suspense fallback={null}>
+          <CommandPalette
+            isOpen={commandPaletteOpen}
+            onClose={() => setCommandPaletteOpen(false)}
+            onNavigate={handleNavigate}
+            onOpenResume={handleOpenResume}
+            onCopyEmail={handleCopyEmail}
+          />
+        </Suspense>
+      )}
 
       {/* 9. Floating Interactive Toasts */}
-      <Toast
-        toasts={toasts}
-        onDismiss={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))}
-      />
+      {toasts.length > 0 && (
+        <Suspense fallback={null}>
+          <Toast
+            toasts={toasts}
+            onDismiss={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };

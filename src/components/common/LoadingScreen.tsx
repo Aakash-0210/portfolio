@@ -20,15 +20,15 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
   const [currentMessageIdx, setCurrentMessageIdx] = useState(0);
 
   useEffect(() => {
+    let completionTimer: number | undefined;
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(timer);
-          soundManager.playSuccess();
-          setTimeout(onComplete, 500);
+          completionTimer = window.setTimeout(onComplete, 200);
           return 100;
         }
-        const increment = Math.floor(Math.random() * 8) + 4;
+        const increment = Math.floor(Math.random() * 24) + 30;
         const next = Math.min(prev + increment, 100);
 
         const msgIdx = Math.min(
@@ -39,9 +39,12 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
 
         return next;
       });
-    }, 55);
+    }, 50);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      if (completionTimer !== undefined) window.clearTimeout(completionTimer);
+    };
   }, [onComplete]);
 
   return (
@@ -50,7 +53,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
         className="fixed inset-0 z-[99999] bg-black flex flex-col items-center justify-center p-6 select-none"
         initial={{ opacity: 1 }}
         exit={{ opacity: 0, scale: 1.03, filter: 'blur(8px)' }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
       >
         {/* Center Monogram Reveal */}
         <div className="relative mb-10 flex flex-col items-center">

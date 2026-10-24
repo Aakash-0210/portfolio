@@ -1,6 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Layers, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { GithubIcon } from '../common/BrandIcons';
 import { projectsData } from '../../data/portfolioData';
 import type { Project } from '../../types';
@@ -9,22 +8,22 @@ export const ProjectsSection: React.FC = () => {
   const renderProjectVisual = (project: Project) => {
     if (project.bannerVisual === 'crypto') {
       return (
-        <div className="relative w-full h-60 sm:h-72 rounded-2xl bg-neutral-950/80 p-5 sm:p-6 overflow-hidden flex flex-col justify-between border border-white/10 group-hover:border-white/25 transition-colors">
-          <div className="flex items-center justify-between z-10 text-xs font-mono">
-            <div className="flex items-start gap-2 sm:items-center">
-              <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#B8A7D9] animate-pulse sm:mt-0" />
-              <span className="text-white font-bold">COINGECKO MARKET DATA</span>
+        <div className="relative w-full h-60 sm:h-72 rounded-2xl bg-neutral-950/80 p-5 sm:p-6 overflow-hidden flex flex-col justify-between border border-white/10">
+          <div className="z-10 flex items-center justify-between gap-2 text-xs font-mono">
+            <div className="flex min-w-0 flex-1 items-start gap-2 sm:items-center">
+              <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#B8A7D9] sm:mt-0" />
+              <span className="min-w-0 truncate text-white font-bold">COINGECKO MARKET DATA</span>
             </div>
-            <span className="shrink-0 whitespace-nowrap text-[11px] text-neutral-400 px-2 py-0.5 rounded bg-white/5 border border-white/5">
+            <span className="shrink-0 whitespace-nowrap rounded border border-white/5 bg-white/5 px-1.5 py-0.5 text-[9px] text-neutral-400 sm:px-2 sm:text-[11px]">
               LIVE PRICES
             </span>
           </div>
 
-          <div className="flex items-end justify-between gap-1.5 h-28 my-auto z-10 px-2">
+          <div className="flex w-full items-end justify-between gap-1.5 h-28 my-auto z-10">
             {[45, 62, 58, 80, 72, 95, 88, 110, 102, 130, 125, 145, 138, 160].map((height, index) => (
               <div key={index} className="flex-1 flex flex-col items-center gap-1">
                 <div
-                  className="w-full bg-neutral-800 group-hover:bg-[#B8A7D9] rounded-t transition-colors duration-300"
+                  className="w-full bg-neutral-800 rounded-t"
                   style={{ height: `${(height / 160) * 85}px` }}
                 />
               </div>
@@ -36,18 +35,18 @@ export const ProjectsSection: React.FC = () => {
 
     if (project.bannerVisual === 'chat') {
       return (
-        <div className="relative w-full h-60 sm:h-72 rounded-2xl bg-neutral-950/80 p-5 sm:p-6 overflow-hidden flex flex-col justify-between border border-white/10 group-hover:border-white/25 transition-colors">
-          <div className="flex items-center justify-between z-10 text-xs font-mono">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-white font-bold">REAL-TIME CHAT</span>
+        <div className="relative w-full h-60 sm:h-72 rounded-2xl bg-neutral-950/80 p-5 sm:p-6 overflow-hidden flex flex-col justify-between border border-white/10">
+          <div className="z-10 flex items-center justify-between gap-2 text-xs font-mono">
+            <div className="flex min-w-0 flex-1 items-center gap-2">
+              <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-400" />
+              <span className="min-w-0 truncate text-white font-bold">REAL-TIME CHAT</span>
             </div>
-            <span className="text-[11px] text-emerald-300 px-2 py-0.5 rounded bg-white/5 border border-white/5">
+            <span className="shrink-0 whitespace-nowrap rounded border border-white/5 bg-white/5 px-1.5 py-0.5 text-[9px] text-emerald-300 sm:px-2 sm:text-[11px]">
               SOCKET CONNECTED
             </span>
           </div>
 
-          <div className="z-10 my-auto space-y-3 max-w-[82%]">
+          <div className="z-10 my-auto w-full space-y-3">
             <div className="w-fit rounded-2xl rounded-bl-sm bg-white/10 px-3.5 py-2 text-xs text-neutral-200">
               Hey, are you online?
               <span className="ml-2 text-[9px] text-neutral-500">10:42</span>
@@ -68,19 +67,19 @@ export const ProjectsSection: React.FC = () => {
 
     if (project.bannerVisual === 'laundry') {
       return (
-        <div className="relative w-full h-60 sm:h-72 rounded-2xl bg-neutral-950/80 p-5 sm:p-6 overflow-hidden flex flex-col justify-between border border-white/10 group-hover:border-white/25 transition-colors">
-          <div className="flex items-start justify-between gap-2 z-10 text-xs font-mono sm:items-center">
-            <div className="flex min-w-0 items-start gap-2 sm:items-center">
+        <div className="relative w-full h-60 sm:h-72 rounded-2xl bg-neutral-950/80 p-5 sm:p-6 overflow-hidden flex flex-col justify-between border border-white/10">
+          <div className="z-10 flex items-start justify-between gap-2 text-xs font-mono sm:items-center">
+            <div className="flex min-w-0 flex-1 items-start gap-2 sm:items-center">
               <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-white sm:mt-0" />
-              <span className="text-white font-bold">JAVA SERVLETS + JDBC ENGINE</span>
+              <span className="min-w-0 truncate text-white font-bold">JAVA SERVLETS + JDBC ENGINE</span>
             </div>
-            <span className="shrink-0 whitespace-nowrap text-[11px] text-[#B8A7D9] px-2 py-0.5 rounded bg-white/5 border border-white/5">
+            <span className="shrink-0 whitespace-nowrap rounded border border-white/5 bg-white/5 px-1.5 py-0.5 text-[9px] text-[#B8A7D9] sm:px-2 sm:text-[11px]">
               100% ACID
             </span>
           </div>
 
           {/* Minimalist Stepper */}
-          <div className="grid grid-cols-4 gap-2 z-10 my-auto">
+          <div className="grid w-full grid-cols-4 gap-2 z-10 my-auto">
             {['Order Placed', 'Wash & Care', 'Quality Check', 'Dispatch'].map((step, i) => (
               <div
                 key={step}
@@ -105,18 +104,18 @@ export const ProjectsSection: React.FC = () => {
     }
 
     return (
-      <div className="relative w-full h-60 sm:h-72 rounded-2xl bg-neutral-950/80 p-5 sm:p-6 overflow-hidden flex flex-col justify-between border border-white/10 group-hover:border-white/25 transition-colors">
-        <div className="flex items-center justify-between z-10 text-xs font-mono">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#B8A7D9]" />
-            <span className="text-white font-bold">E-COMMERCE STORE</span>
+      <div className="relative w-full h-60 sm:h-72 rounded-2xl bg-neutral-950/80 p-5 sm:p-6 overflow-hidden flex flex-col justify-between border border-white/10">
+        <div className="z-10 flex items-center justify-between gap-2 text-xs font-mono">
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <span className="h-2 w-2 shrink-0 rounded-full bg-[#B8A7D9]" />
+            <span className="min-w-0 truncate text-white font-bold">E-COMMERCE STORE</span>
           </div>
-          <span className="text-[11px] text-neutral-400 px-2 py-0.5 rounded bg-white/5 border border-white/5">
+          <span className="shrink-0 whitespace-nowrap rounded border border-white/5 bg-white/5 px-1.5 py-0.5 text-[9px] text-neutral-400 sm:px-2 sm:text-[11px]">
             PRODUCT CATALOG
           </span>
         </div>
 
-        <div className="grid grid-cols-3 gap-2.5 z-10 my-auto">
+        <div className="grid w-full grid-cols-3 gap-2.5 z-10 my-auto">
           {[
             { name: 'Everyday Bag', price: '$48', color: 'from-amber-700 to-orange-950' },
             { name: 'Classic Sneaker', price: '$72', color: 'from-stone-500 to-neutral-900' },
@@ -137,118 +136,81 @@ export const ProjectsSection: React.FC = () => {
   };
 
   return (
-    <section id="projects" className="relative py-28 z-10 border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="projects" className="portfolio-section projects-section relative z-10">
+      <div className="section-inner container-x max-w-7xl mx-auto px-2 sm:px-4 lg:px-5">
         
         {/* Section Header */}
-        <div className="flex flex-col space-y-4 mb-20 text-left">
+        <div className="section-header projects-header flex flex-col space-y-4 mb-20 text-left">
           <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#B8A7D9]">
             <span>(03)</span>
             <span>//</span>
             <span>SELECTED WORKS</span>
           </div>
 
-          <h2 className="whitespace-nowrap text-3xl sm:text-6xl font-extrabold uppercase tracking-tighter text-[#f4f4f0] max-w-4xl">
+          <h2 className="section-title text-3xl sm:text-6xl font-extrabold uppercase tracking-tighter text-[#f4f4f0] max-w-4xl">
             Featured <span className="text-neutral-500">Projects.</span>
           </h2>
 
-          <p className="text-base sm:text-lg text-neutral-400 max-w-2xl font-light">
+          <p className="text-base sm:text-lg text-neutral-400 max-w-2xl font-normal leading-8">
             Thoughtfully crafted full-stack platforms engineered with high-throughput database transactions, server state orchestration, and responsive interfaces.
           </p>
         </div>
 
         {/* Projects List */}
-        <div className="space-y-16">
-          {projectsData.map((project, index) => {
-            const isReversed = index % 2 === 1;
+        <div className="project-list">
+          {projectsData.map((project, index) => (
+            <article key={project.id} className="project-card project-card-layout">
+              <div className="project-visual-viewport">
+                {renderProjectVisual(project)}
+              </div>
 
-            return (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true, margin: '-80px', amount: 0.15 }}
-                transition={{ duration: 0.35 }}
-                className="p-6 sm:p-10 rounded-3xl bg-[#08080a]/95 border border-white/10 shadow-lg relative overflow-hidden"
-              >
-                <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center ${isReversed ? 'lg:flex-row-reverse' : ''}`}>
-                  
-                  {/* Visual Side */}
-                  <div className={`lg:col-span-6 ${isReversed ? 'lg:order-2' : ''}`}>
-                    {renderProjectVisual(project)}
-                  </div>
-
-                  {/* Content Side */}
-                  <div className={`lg:col-span-6 space-y-5 ${isReversed ? 'lg:order-1' : ''}`}>
-                    {/* Index & Category */}
-                    <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                      <span className="text-2xl font-bold font-mono text-[#B8A7D9]">
-                        0{index + 1}
-                      </span>
-                      <span className="text-xs font-mono uppercase tracking-widest text-neutral-400">
-                        {project.category}
-                      </span>
-                    </div>
-
-                    {/* Title & Tagline */}
-                    <div>
-                      <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                        {project.title}
-                      </h3>
-                      <p className="text-xs sm:text-sm font-mono text-neutral-400 mt-1">
-                        {project.tagline}
-                      </p>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-neutral-300 text-sm leading-relaxed font-light">
-                      {project.description}
-                    </p>
-
-                    {/* Tech Badges */}
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      {project.techStack.map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-2.5 py-0.5 rounded text-xs font-mono bg-white/5 text-neutral-300 border border-white/5"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex flex-wrap items-center gap-3 pt-3">
-                      {/* Source Code */}
-                      <a
-                        href={project.links.github}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="px-4 py-2.5 rounded-full glass-panel border border-white/10 hover:border-white/30 text-neutral-300 hover:text-white text-xs font-mono uppercase tracking-wider flex items-center gap-2 transition-colors"
-                      >
-                        <GithubIcon className="w-3.5 h-3.5" />
-                        <span>Source</span>
-                      </a>
-
-                      {/* Live Demo */}
-                      {project.links.demo && (
-                        <a
-                          href={project.links.demo}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="px-4 py-2.5 rounded-full glass-panel border border-white/10 hover:border-white/30 text-[#B8A7D9] hover:text-white text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 transition-colors"
-                        >
-                          <span>Demo</span>
-                          <ArrowUpRight className="w-3.5 h-3.5" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-
+              <div className="project-card-content">
+                <div className="project-card-kicker">
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <span>{project.category}</span>
                 </div>
-              </motion.div>
-            );
-          })}
+
+                <div className="project-card-heading">
+                  <h3>{project.title}</h3>
+                  <p>{project.tagline}</p>
+                </div>
+
+                <p className="project-card-description text-neutral-300 text-base leading-relaxed font-light">
+                  {project.description}
+                </p>
+
+                <div className="project-card-tech" aria-label="Technologies used">
+                  {project.techStack.map((tech) => (
+                    <span key={tech}>{tech}</span>
+                  ))}
+                </div>
+
+                <div className="project-card-actions">
+                  <a
+                    href={project.links.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="glass-panel border border-white/10 hover:border-white/30 text-neutral-300 hover:text-white"
+                  >
+                    <GithubIcon className="w-3.5 h-3.5" />
+                    <span>Source</span>
+                  </a>
+
+                  {project.links.demo && (
+                    <a
+                      href={project.links.demo}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="glass-panel border border-white/10 hover:border-white/30 text-[#B8A7D9] hover:text-white"
+                    >
+                      <span>Demo</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
 
       </div>

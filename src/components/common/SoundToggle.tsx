@@ -6,6 +6,7 @@ export const SoundToggle: React.FC = () => {
   const [muted, setMuted] = useState(soundManager.isMuted());
 
   const handleToggle = () => {
+    if (!muted) soundManager.playClick();
     const next = soundManager.toggleMute();
     setMuted(next);
   };

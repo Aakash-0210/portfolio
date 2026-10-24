@@ -3,6 +3,7 @@ import { CornerDownLeft } from 'lucide-react';
 import { githubStats } from '../../data/githubData';
 import { personalInfo } from '../../data/portfolioData';
 import { soundManager } from '../../utils/sound';
+import { useGsapScrollReveal } from '../../hooks/useGsapScrollReveal';
 
 export const CodeShowcaseSection: React.FC = () => {
   // Terminal Simulator State
@@ -12,6 +13,8 @@ export const CodeShowcaseSection: React.FC = () => {
     { cmd: 'stack --summary', output: 'HTML5, CSS3, JavaScript, React.js, Tailwind CSS, Node.js, Express.js, REST API, JWT Auth, Spring Boot, Java, Java Servlets, MySQL, MongoDB' },
   ]);
   const terminalOutputRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  useGsapScrollReveal(sectionRef);
 
   useEffect(() => {
     const terminalOutput = terminalOutputRef.current;
@@ -64,29 +67,29 @@ export const CodeShowcaseSection: React.FC = () => {
   };
 
   return (
-    <section id="code-showcase" className="relative py-28 z-10 border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={sectionRef} id="code-showcase" className="portfolio-section lab-section relative z-10">
+      <div className="section-inner container-x max-w-7xl mx-auto px-2 sm:px-4 lg:px-5">
         
         {/* Section Header */}
-        <div className="flex flex-col space-y-4 mb-16 text-left">
+        <div data-gsap-reveal="left" className="section-header lab-header flex flex-col space-y-4 mb-16 text-left">
           <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#B8A7D9]">
             <span>(04)</span>
             <span>//</span>
             <span>DEVELOPER LAB</span>
           </div>
 
-          <h2 className="text-4xl sm:text-6xl font-extrabold uppercase tracking-tighter text-[#f4f4f0] max-w-4xl">
+          <h2 data-gsap-rule className="section-title text-4xl sm:text-6xl font-extrabold uppercase tracking-tighter text-[#f4f4f0] max-w-4xl">
             Interactive <span className="text-neutral-500">Terminal.</span>
           </h2>
 
-          <p className="text-base sm:text-lg text-neutral-400 max-w-2xl font-light">
+          <p className="text-base sm:text-lg text-neutral-400 max-w-2xl font-normal leading-8">
             Explore my profile, skills, and projects through a set of interactive terminal commands.
           </p>
         </div>
 
         {/* Centered terminal with static command reference */}
-        <div className="grid grid-cols-1 gap-5 items-stretch lg:grid-cols-12 lg:gap-4">
-          <aside className="flex flex-col justify-center gap-5 px-2 lg:col-span-3 lg:items-end">
+        <div data-gsap-stagger className="lab-layout grid grid-cols-1 gap-5 items-stretch lg:grid-cols-12 lg:gap-4">
+          <aside data-gsap-item className="lab-command-list flex flex-col justify-center gap-5 px-2 lg:col-span-3 lg:items-end">
             <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-500 lg:text-right">Available commands</p>
             <div className="space-y-4 font-mono text-xs lg:text-right">
               {[
@@ -104,20 +107,20 @@ export const CodeShowcaseSection: React.FC = () => {
           </aside>
           
           {/* Interactive Web Terminal */}
-          <div className="w-full rounded-3xl glass-panel border border-white/10 shadow-2xl overflow-hidden flex flex-col h-[440px] lg:col-span-6">
-            <div className="px-4 py-3 bg-neutral-950/90 border-b border-white/10 flex items-center justify-between">
+          <div data-gsap-item className="lab-terminal w-full rounded-3xl glass-panel border border-white/10 shadow-2xl overflow-hidden flex flex-col h-[440px] lg:col-span-6">
+            <div className="lab-terminal-header px-4 py-3 bg-neutral-950/90 border-b border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-neutral-600" />
-                <span className="w-2.5 h-2.5 rounded-full bg-neutral-600" />
-                <span className="w-2.5 h-2.5 rounded-full bg-neutral-600" />
-                <span className="text-xs font-mono text-neutral-400 ml-2">
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-neutral-600" />
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-neutral-600" />
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-neutral-600" />
+                <span className="lab-terminal-prompt ml-2 font-mono text-xs text-neutral-400">
                   bash: aakash@portfolio:~
                 </span>
               </div>
-              <span className="text-[10px] font-mono text-[#B8A7D9]">TTY v1.2</span>
+              <span className="font-mono text-[10px] text-[#B8A7D9]">TTY v1.2</span>
             </div>
 
-            <div ref={terminalOutputRef} className="p-4 overflow-y-auto flex-1 font-mono text-xs text-neutral-300 space-y-3 bg-black/95">
+            <div ref={terminalOutputRef} className="lab-terminal-output p-4 overflow-y-auto flex-1 font-mono text-xs text-neutral-300 space-y-3 bg-black/95">
               <div className="text-neutral-500">
                 Welcome to Aakash's Terminal. Type a command from the reference or enter <span className="text-white font-bold">help</span>.
               </div>
@@ -162,7 +165,7 @@ export const CodeShowcaseSection: React.FC = () => {
             </form>
           </div>
 
-          <aside className="flex flex-col justify-center gap-5 px-2 lg:col-span-3">
+          <aside data-gsap-item className="lab-command-list flex flex-col justify-center gap-5 px-2 lg:col-span-3">
             <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-500">More commands</p>
             <div className="space-y-4 font-mono text-xs">
               {[

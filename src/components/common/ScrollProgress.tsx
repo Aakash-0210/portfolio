@@ -1,18 +1,31 @@
-import React from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
 
 export const ScrollProgress: React.FC = () => {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
+  const progressRef = useRef<HTMLDivElement | null>(null);
 
-  return (
-    <motion.div
-      className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#B8A7D9] via-[#B8A7D9] to-white origin-left z-[9998]"
-      style={{ scaleX }}
-    />
-  );
+  useEffect(() => {
+    let frame = 0;
+    const updateProgress = () => {
+      frame = 0;
+      const element = progressRef.current;
+      if (!element) return;
+      const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
+      element.style.transform = `scaleX(${Math.min(1, Math.max(0, progress))})`;
+    };
+    const scheduleUpdate = () => {
+      if (frame === 0) frame = window.requestAnimationFrame(updateProgress);
+    };
+
+    updateProgress();
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate);
+    return () => {
+      window.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('resize', scheduleUpdate);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return <div ref={progressRef} className="scroll-progress fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#B8A7D9] via-[#B8A7D9] to-white origin-left z-[9998]" />;
 };

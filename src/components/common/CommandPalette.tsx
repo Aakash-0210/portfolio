@@ -236,7 +236,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                 ESC
               </span>
               <button
-                onClick={onClose}
+                onClick={() => {
+                  soundManager.playClick();
+                  onClose();
+                }}
                 className="text-neutral-400 hover:text-white p-1 rounded-md transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
